@@ -5,17 +5,95 @@
 <div class="row">
     <div class="col-md-12">
         @*@using (Html.BeginForm(new { id = "FilePathForm" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ExcelFile, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.ExcelFile, new { @class = "form-control", type="file" })
+                            @Html.ValidationMessageFor(model => model.ExcelFile, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Submit" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }*@
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @*@using (Ajax.BeginForm("Test", "Home", null, new AjaxOptions { HttpMethod = "POST" }, new { id = "FilePathForm", enctype = "multipart/form-data" }))*@
+        @using (Html.BeginForm("Test", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "FilePathForm" }))
         {
             @Html.AntiForgeryToken()
-
             <div class="form-horizontal">
                 <hr />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
-                    @Html.LabelFor(model => model.ExcelFile, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.File, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.ExcelFile, new { @class = "form-control", type="file" })
-                        @Html.ValidationMessageFor(model => model.ExcelFile, "", new { @class = "text-danger" })
+                        @Html.TextBoxFor(model => model.File, new { @class = "form-control", type = "file" })
+                        @Html.ValidationMessageFor(model => model.File, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Submit" class="btn btn-default" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div id="progress" style="display:none">
+                            <div id="bar">please waiting.....</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div id="progress" style="display:none">
+                            <div id="message"></div>
+                        </div>
+                    </div>
+                </div>
+                @*<fieldset>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.File)
+                        </div>
+                        <div class="editor-field">
+                            @Html.TextBoxFor(model => model.File, new { type = "file" })
+                            @Html.ValidationMessageFor(model => model.File)
+                        </div>
+
+                        <div class="editor-field">
+                            <input type="submit" value="Submit" />
+                        </div>
+                    </fieldset>*@
+            </div>
+        }
+    </div>
+</div>
+
+@*<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Test", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "FilePathForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.File, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.File, new { @class = "form-control", type = "file" })
+                        @Html.ValidationMessageFor(model => model.File, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
@@ -24,118 +102,93 @@
                     </div>
                 </div>
             </div>
-        }*@
-
-        @*@using (Ajax.BeginForm("Test", "Home", null, new AjaxOptions { HttpMethod = "POST" }, new { id = "FilePathForm", enctype = "multipart/form-data" }))*@
-        @using (Html.BeginForm("Test", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "FilePathForm" }))
-        {
-            <fieldset>
-                <legend>Movie</legend>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.File)
-                </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.File, new { type = "file" })
-                    @Html.ValidationMessageFor(model => model.File)
-                </div>
-
-                <div class="editor-field">
-                    <input type="submit" value="Submit" />
-                </div>
-            </fieldset>
         }
+    </div>
+</div>*@
 
-        <div id="progress" style="display:none">
-            <div id="bar">please waiting.....</div>
-        </div>
-        <br />
-        <div id="message"></div>
-</div>
-</div>
+        <script>
+            $(function () {
+                //$("#FilePathForm").submit(function (e) {
+                //    //if (!$form.valid()) return;
+                //    var options = {
+                //        beforeSend: function () {
+                //            $("#progress").show();
+                //        },
+                //        success: function () {
+                //            $("#progress").hide();
+                //        },
+                //        complete: function (response) {
+                //            $("#message").html("<font color='green'>" + response.responseText + "</font>");
+                //        },
+                //        error: function () {
+                //            $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+                //        }
+                //    };
+                //    $("#FilePathForm").ajaxForm(options);
+                //    return false;
+                //});
 
-<script>
-    $(function () {
-        //$("#FilePathForm").submit(function (e) {
-        //    //if (!$form.valid()) return;
-        //    var options = {
-        //        beforeSend: function () {
-        //            $("#progress").show();
-        //        },
-        //        success: function () {
-        //            $("#progress").hide();
-        //        },
-        //        complete: function (response) {
-        //            $("#message").html("<font color='green'>" + response.responseText + "</font>");
-        //        },
-        //        error: function () {
-        //            $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
-        //        }
-        //    };
-        //    $("#FilePathForm").ajaxForm(options);
-        //    return false;
-        //});
-        
-        //if (!$form.valid()) return;
-        var options = {
-            beforeSend: function () {
-                $("#progress").show();
-            },
-            success: function () {
-                $("#progress").hide();
-            },
-            complete: function (response) {
-                $("#message").html("<font color='green'>" + response.responseText + "</font>");
-            },
-            error: function () {
-                $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
-            }
-        };
-        $("#FilePathForm").ajaxForm(options);
+                //if (!$form.valid()) return;
+                var options = {
+                    beforeSend: function () {
+                        $("#progress").show();
+                    },
+                    success: function () {
+                        $("#progress").hide();
+                    },
+                    complete: function (response) {
+                        $("#message").html("<font color='green'>" + response.responseText + "</font>");
+                    },
+                    error: function () {
+                        $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+                    }
+                };
+                $("#FilePathForm").ajaxForm(options);
 
-        return false;
-        
-        //$("#FilePathForm").submit(function (e) {
-        //    if (!$(this).valid()) { }
+                return false;
 
-        //    var formData = new FormData($('form')[0]);
-        //    console.log(formData);
-        //    var form = e.target;
-        //    if (form.getAttribute("enctype") === "multipart/form-data") {
-        //        if (form.dataset.ajax) {
-        //            e.preventDefault();
-        //            e.stopImmediatePropagation();
+                //$("#FilePathForm").submit(function (e) {
+                //    if (!$(this).valid()) { }
 
-        //            $.ajax({
-        //                url: 'http://localhost:1637/Home/Test',
-        //                type: 'Post',
-        //                beforeSend: function () { },
-        //                success: function (result) {
+                //    var formData = new FormData($('form')[0]);
+                //    console.log(formData);
+                //    var form = e.target;
+                //    if (form.getAttribute("enctype") === "multipart/form-data") {
+                //        if (form.dataset.ajax) {
+                //            e.preventDefault();
+                //            e.stopImmediatePropagation();
 
-        //                },
-        //                xhr: function () {  // Custom XMLHttpRequest
-        //                    var myXhr = $.ajaxSettings.xhr();
-        //                    if (myXhr.upload) { // Check if upload property exists
-        //                        // Progress code if you want
-        //                    }
-        //                    return myXhr;
-        //                },
-        //                error: function () { },
-        //                data: formData,
-        //                cache: false,
-        //                contentType: false,
-        //                processData: false
-        //            });
+                //            $.ajax({
+                //                url: 'http://localhost:1637/Home/Test',
+                //                type: 'Post',
+                //                beforeSend: function () { },
+                //                success: function (result) {
 
-        //        }
-        //    }
+                //                },
+                //                xhr: function () {  // Custom XMLHttpRequest
+                //                    var myXhr = $.ajaxSettings.xhr();
+                //                    if (myXhr.upload) { // Check if upload property exists
+                //                        // Progress code if you want
+                //                    }
+                //                    return myXhr;
+                //                },
+                //                error: function () { },
+                //                data: formData,
+                //                cache: false,
+                //                contentType: false,
+                //                processData: false
+                //            });
 
-        //    return false;
-        //});
-        
-    });
-</script>
+                //        }
+                //    }
 
-<script src="http://malsup.github.com/jquery.form.js"></script>
-<script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+                //    return false;
+                //});
+
+            });
+        </script>
+
+        <script src="http://malsup.github.com/jquery.form.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

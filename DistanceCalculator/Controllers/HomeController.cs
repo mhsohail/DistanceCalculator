@@ -372,7 +372,7 @@ namespace DistanceCalculator.Controllers
                                     }
                                 }
                             }
-                            catch(WebException WebExc)
+                            catch (WebException WebExc)
                             {
                                 if (WebExc.Status == WebExceptionStatus.ProtocolError && WebExc.Response != null)
                                 {
@@ -436,6 +436,8 @@ namespace DistanceCalculator.Controllers
                                     }
                                 }
                             }
+                            catch (Exception Exc)
+                            { }
                         }
 
                         CalculatedMsas.Add(CalculatedMsa);
