@@ -32,22 +32,6 @@
             <fieldset>
                 <legend>Movie</legend>
                 <div class="editor-label">
-                    @Html.LabelFor(model => model.ExcelFile)
-                </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.ExcelFile, new { type = "file" })
-                    @Html.ValidationMessageFor(model => model.ExcelFile)
-                </div>
-                
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.Name)
-                </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Name)
-                    @Html.ValidationMessageFor(model => model.Name)
-                </div>
-
-                <div class="editor-label">
                     @Html.LabelFor(model => model.File)
                 </div>
                 <div class="editor-field">
@@ -109,7 +93,6 @@
         $("#FilePathForm").ajaxForm(options);
 
         return false;
-        
         
         //$("#FilePathForm").submit(function (e) {
         //    if (!$(this).valid()) { }

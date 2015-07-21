@@ -27,4 +27,6 @@ C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\EntityFra
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\EntityFramework.SqlServer.dll
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\EntityFramework.xml
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\EntityFramework.SqlServer.xml
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\log4net.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\log4net.xml
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\DistanceCalculator.csprojResolveAssemblyReference.cache
