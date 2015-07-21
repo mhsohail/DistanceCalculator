@@ -289,7 +289,9 @@ namespace DistanceCalculator.Controllers
                         CalculatedMsa CalculatedMsa = new CalculatedMsa();
                         CalculatedMsa.Name = AvailableMsaName;
                         CalculatedMsa.AddressesDistances = new List<AddressesDistance>();
-
+                        string MatrixApiMode = "driving";
+                        string MatrixApiLanguage = "en-EN";
+                        
                         var SubMsaAddresses = MsaAddresses.Where(msa => msa.MSA.Equals(AvailableMsaName)).ToList<MsaAddress>();
                         for (int i = 0; i < SubMsaAddresses.Count(); i++)
                         {
@@ -313,26 +315,8 @@ namespace DistanceCalculator.Controllers
                             }
 
                             int RandomNumber = new Random().Next(0, APIs.Count - 1);
-                            /*string json;
-                            try
-                            {
-                                using (WebClient client = new WebClient())
-                                {
-                                    //json = client.DownloadString("https://maps.googleapis.com/maps/api/distancematrix/json?origins=2430+Esplanade+Drive,%20Algonquin,%20IL&destinations=1700+W.+Central+Arlington+Heights+IL|1700+W.+CentralMD%3b+Roman+Voytsekhovskiy+Arlington+Heights+IL|726+S.+Weber+Road+Bolingbrook+IL|100+E+Walton+Street.+400+W+Chicago+IL|116+W+Hubbard+St.Floor+2+Chicago+IL|150+E.+Huron+StreetSte.+1200+Chicago+IL|20+W.+KinzieSuite+1130+Chicago+IL|3000+N+Halsted+StreetSuite+409+Chicago+IL|333+E.+Benton+PlaceSuite+204+Chicago+IL|676+N+Saint+Clair+StreetSte.+1600+Chicago+IL|680+North+Lake+Shore+DriveSuite+1325+Chicago+IL|875+N.+Rush+St+Chicago+IL|875+N.+Rush+StMD%3b+Roman+Voytsekhovskiy+Chicago+IL|875+North+Michigan+AvenueSuite+3850+Chicago+IL|Suite+905+Chicago+IL|525+E.+Congress+PkwySuite+200+Crystal+Lake+IL|20530+N.+Rand+RoadSuite+132+Deer+Park+IL|2850+West+95th+Street+st.+403+Evergreen+Park+IL|2850+West+95th+Street+st.+403DO.%2c+John+R.+Elsen+MD+Evergreen+Park+IL|20325+S.+Graceland+LaneSte+B+Frankfort+IL|1+West+State+StreetSuite+330+Geneva+IL|716+Vernon+Ave+Glencoe+IL|2050+Pfingsten+RoadSuite+270+Glenview+IL|2601+Compass+RoadSuite+125+Glenview+IL|1160+Park+Avenue+WestSuite+2E+Highland+Park+IL|125+W.+2nd+Street+Hinsdale+IL|512+Green+Bay+Road+Kenilworth+IL|5201+S+Willow+Springs+RoadSuite+430+La+Grange+IL|700+North+Westmoreland+Road+Lake+Forest+IL|800+N.+Westmoreland+Rd+Lake+Forest+IL|275+Parkway+Dr.Suite+521+Lincolnshire+IL|2155+City+Gate+LaneSuite+225+Naperville+IL|4425+Montgomery+RoadSuite+102+Naperville+IL|630+N.+Washington+St+Naperville+IL|630+N.+Washington+StMD%3b+Roman+Voytsekhovskiy+Naperville+IL|400+Skokie+BlvdSuite+475+Northbrook+IL|1+S.+365+Summit+Ave+Oakbrook+Terrace+IL|17W535+Butterfield+RdSuite+100+Oakbrook+Terrace+IL|1105+Milwaukee+Ave+Riverwoods+IL|1140+S+Roselle+Rd+Schaumburg+IL|9843+Gross+Point+Road+Skokie+IL|9933+Lawler+AvenueSuite+520+Skokie+IL|2+Executive+Court+South+Barringtion+IL|230+Center+Dr+Vernon+Hills+IL|6825+Kingery+Highway+(Rt+83)+Willowbrook+IL&mode=bicycling&language=en-EN&key=AIzaSyCDB-C_sJ4fIENo0ku_ZM6-9despwBHvvo&key=" + APIs[RandomNumber]);
-                                }
-                            }
-                            catch (WebException exc)
-                            {
-                                string responseText;
-                                
-                                using (var reader = new StreamReader(exc.Response.GetResponseStream()))
-                                {
-                                    responseText = reader.ReadToEnd();
-                                }
-                            }
-                            */
                             JavaScriptSerializer serializer = new JavaScriptSerializer();
-                            string serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=driving&language=en-EN&key=" + APIs[RandomNumber]);
+                            string serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[RandomNumber]);
 
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceUrl);
                             request.Method = "GET";
@@ -388,22 +372,69 @@ namespace DistanceCalculator.Controllers
                                     }
                                 }
                             }
-                            catch(WebException exc)
+                            catch(WebException WebExc)
                             {
-                                j = i + 1;
-                                for ( ; j < SubMsaAddresses.Count(); j++)
+                                if (WebExc.Status == WebExceptionStatus.ProtocolError && WebExc.Response != null)
                                 {
-                                    OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                                    j = i + 1;
+                                    for (; j < SubMsaAddresses.Count(); j++)
+                                    {
+                                        OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                                        serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[RandomNumber]);
+
+                                        request = (HttpWebRequest)WebRequest.Create(serviceUrl);
+                                        request.Method = "GET";
+                                        request.Accept = "application/json; charset=UTF-8";
+                                        request.Headers.Add("Accept-Language", " en-US");
+
+                                        var httpResponse = (HttpWebResponse)request.GetResponse();
+                                        DistanceMatrixResponse DistanceMatrixResponse = null;
+                                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                        {
+                                            var responseText = streamReader.ReadToEnd();
+                                            DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
+                                            if (DistanceMatrixResponse.Status == "OK")
+                                            {
+                                                if (DistanceMatrixResponse.Error_Message != null)
+                                                {
+                                                    Response.IsSucceed = false;
+                                                    Response.Message = DistanceMatrixResponse.Error_Message;
+                                                    return Response;
+                                                }
+
+                                                var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
+                                                var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
+                                                int ii = 0;
+                                                foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
+                                                {
+                                                    AddressesDistance AddressesDistance = new AddressesDistance();
+                                                    AddressesDistance.OriginAddress = OriginAddress;
+                                                    AddressesDistance.DestinationAddress = DestinationAddress;
+
+                                                    if (Elements[ii].Status.Equals("OK"))
+                                                    {
+                                                        AddressesDistance.Distance = Elements[ii].Distance.Text;
+                                                    }
+                                                    else
+                                                    {
+                                                        AddressesDistance.Distance = "No results found";
+                                                    }
+
+                                                    CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                                    ii++;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                AddressesDistance AddressesDistance = new AddressesDistance();
+                                                //AddressesDistance.OriginAddress = OriginAddress;
+                                                //AddressesDistance.DestinationAddress = DestinationAddress;
+                                                AddressesDistance.Distance = "Invalid Request";
+                                                CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                            }
+                                        }
+                                    }
                                 }
-                                serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=driving&language=en-EN&key=" + APIs[RandomNumber]);
-
-                                request = (HttpWebRequest)WebRequest.Create(serviceUrl);
-                                request.Method = "GET";
-                                request.Accept = "application/json; charset=UTF-8";
-                                request.Headers.Add("Accept-Language", " en-US");
-
-                                var httpResponse = (HttpWebResponse)request.GetResponse();
-
                             }
                         }
 
