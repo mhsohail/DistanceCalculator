@@ -215,6 +215,30 @@ namespace DistanceCalculator.Controllers
             return new JavaScriptSerializer().Serialize(Response);
         }
 
+        public ActionResult Download()
+        {
+            //byte[] fileBytes = System.IO.File.ReadAllBytes("~/XlsFiles/CalculatedAddresses.xlsx");
+            //var response = new FileContentResult(fileBytes, "application/octet-stream");
+            //response.FileDownloadName = "~/XlsFiles/CalculatedAddresses.xlsx";
+            //return response;
+
+            string filename = "CalculatedAddresses.xlsx";
+            string filepath = AppDomain.CurrentDomain.BaseDirectory + "/XlsFiles/" + filename;
+            byte[] filedata = System.IO.File.ReadAllBytes(filepath);
+            string contentType = MimeMapping.GetMimeMapping(filepath);
+
+            System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = filename,
+                Inline = true,
+            };
+
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return File(filedata, contentType);
+
+        }
+
         private Response ProcessEachWorksheet(Microsoft.Office.Interop.Excel.Workbook Workbook)
         {
 

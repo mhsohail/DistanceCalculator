@@ -51,8 +51,9 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <div id="progress" style="display:none">
-                            <div id="bar">please waiting.....</div>
+                        <div id="progress">
+                            <span id="CalculationProgressLabel">Calculating Addresses: </span>
+                            <span id="CalculationProgress"><a href="/Home/Download" target="_blank"></a></span>
                         </div>
                     </div>
                 </div>
@@ -61,6 +62,12 @@
                         <div id="progress" style="display:none">
                             <div id="message"></div>
                         </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <span id="DownloadExcelFileLabel">Download Excel File: </span>
+                        <span id="DownloadExcelFile"></span>
                     </div>
                 </div>
                 @*<fieldset>
@@ -131,16 +138,18 @@
                 //if (!$form.valid()) return;
                 var options = {
                     beforeSend: function () {
-                        $("#progress").show();
+                        $("#CalculationProgress").html("<img src='images/ajax-loader.gif' style=\"width:20px;\" />");
+                        $("#DownloadExcelFile").html("Waiting...");
                     },
                     success: function () {
-                        $("#progress").hide();
+                        $("#DownloadExcelFile").html("<a href='/Home/Download' target='_blank'>Download</a>");
                     },
                     complete: function (response) {
-                        $("#message").html("<font color='green'>" + response.responseText + "</font>");
+                        $("#CalculationProgress").html("Completed");
                     },
                     error: function () {
-                        $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
+                        $("#CalculationProgress").html("Failed");
+                        $("#DownloadExcelFile").html("File could not be created due to failed progress");
                     }
                 };
                 $("#FilePathForm").ajaxForm(options);
