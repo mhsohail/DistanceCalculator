@@ -31,3 +31,12 @@ C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\log4net.d
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\log4net.xml
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\DistanceCalculator.csprojResolveAssemblyReference.cache
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\DocumentFormat.OpenXml.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.Security.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Owin.dll
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.xml
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.Security.xml
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\bin\Microsoft.Owin.Security.OAuth.xml
