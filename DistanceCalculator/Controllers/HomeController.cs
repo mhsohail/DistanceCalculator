@@ -483,7 +483,7 @@ namespace DistanceCalculator.Controllers
                 myWorkSheet.Cells[1, 4] = "Distance";
 
                 // don't open excel file in windows during building
-                myExcelFile.Visible = true;
+                myExcelFile.Visible = false;
 
                 myWorkSheet.EnableAutoFilter = true;
                 myWorkSheet.Cells.AutoFilter(1);
