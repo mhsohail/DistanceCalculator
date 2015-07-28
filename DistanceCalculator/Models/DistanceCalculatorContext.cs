@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DistanceCalculator.ViewModels;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -6,7 +8,7 @@ using System.Web;
 
 namespace DistanceCalculator.Models
 {
-    public class DistanceCalculatorContext : DbContext
+    public class DistanceCalculatorContext : IdentityDbContext<ApplicationUser>
     {
         // You can add custom code to this file. Changes will not be overwritten.
         // 
@@ -14,12 +16,10 @@ namespace DistanceCalculator.Models
         // automatically whenever you change your model schema, please use data migrations.
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
-    
-        public DistanceCalculatorContext() : base("name=DistanceCalculatorContext")
+
+        public DistanceCalculatorContext()
+            : base("DistanceCalculatorContext")
         {
         }
-
-        public System.Data.Entity.DbSet<DistanceCalculator.ViewModels.HomeIndexViewModel> HomeIndexViewModels { get; set; }
-    
     }
 }
