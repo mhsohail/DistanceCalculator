@@ -29,66 +29,37 @@ namespace DistanceCalculator.Controllers
 
         public ActionResult Index()
         {
-            Guid g = Guid.NewGuid();
-            string GuidString = Convert.ToBase64String(g.ToByteArray());
-            GuidString = GuidString.Replace("=", string.Empty);
-            GuidString = GuidString.Replace("+", string.Empty);
-            GuidString = GuidString.Replace("\\", string.Empty);
-            GuidString = GuidString.Replace("/", string.Empty);
-
-            string FilePath = Path.Combine(Server.MapPath("~/XlsFiles/ddd" + GuidString + ".xlsx"));
-
-            CreateSpreadsheetWorkbook(FilePath);
-
-            // put headings in first row
-            InsertText(FilePath, "MSA", Convert.ToChar(65 + 0).ToString(), 1);
-            InsertText(FilePath, "Origin Address", Convert.ToChar(65 + 1).ToString(), 1);
-            InsertText(FilePath, "Destination Address", Convert.ToChar(65 + 2).ToString(), 1);
-            InsertText(FilePath, "Distance", Convert.ToChar(65 + 3).ToString(), 1);
-
-            for (uint i = 1; i <= 4; i++)
-            {
-                for (uint j = 0; j < 4; j++)
-                {
-                    InsertText(FilePath, Convert.ToChar(65 + j).ToString() + "-" + (i + 1), Convert.ToChar(65 + j).ToString(), i + 1);
-                }
-            }
-
             return View();
         }
 
-        public void InsertText(string docName, string text, string Row, uint Column)
-        {
-            // Open the document for editing.
-            using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(docName, true))
+        public void InsertText(SpreadsheetDocument spreadSheet, string text, string Row, uint Column)
+        {    
+            // Get the SharedStringTablePart. If it does not exist, create a new one.
+            SharedStringTablePart shareStringPart;
+            if (spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
             {
-                // Get the SharedStringTablePart. If it does not exist, create a new one.
-                SharedStringTablePart shareStringPart;
-                if (spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
-                {
-                    shareStringPart = spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
-                }
-                else
-                {
-                    shareStringPart = spreadSheet.WorkbookPart.AddNewPart<SharedStringTablePart>();
-                }
-
-                // Insert the text into the SharedStringTablePart.
-                int index = InsertSharedStringItem(text, shareStringPart);
-
-                // Insert a new worksheet.
-                WorksheetPart worksheetPart = InsertWorksheet(spreadSheet.WorkbookPart);
-
-                // Insert cell A1 into the new worksheet.
-                Cell cell = InsertCellInWorksheet(Row, Column, worksheetPart);
-
-                // Set the value of cell A1.
-                cell.CellValue = new CellValue(index.ToString());
-                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                // Save the new worksheet.
-                worksheetPart.Worksheet.Save();
+                shareStringPart = spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
             }
+            else
+            {
+                shareStringPart = spreadSheet.WorkbookPart.AddNewPart<SharedStringTablePart>();
+            }
+
+            // Insert the text into the SharedStringTablePart.
+            int index = InsertSharedStringItem(text, shareStringPart);
+
+            // Insert a new worksheet.
+            WorksheetPart worksheetPart = InsertWorksheet(spreadSheet.WorkbookPart);
+
+            // Insert cell A1 into the new worksheet.
+            Cell cell = InsertCellInWorksheet(Row, Column, worksheetPart);
+
+            // Set the value of cell A1.
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+            // Save the new worksheet.
+            worksheetPart.Worksheet.Save();
         }
 
         private void CreateSpreadsheetWorkbook(string filepath)
@@ -579,7 +550,7 @@ namespace DistanceCalculator.Controllers
 
         private Response CalculateDistances()
         {
-            try
+            //try
             {
                 var Response = new Response();
                 ICollection<CalculatedMsa> CalculatedMsas = new List<CalculatedMsa>();
@@ -618,206 +589,204 @@ namespace DistanceCalculator.Controllers
                     /*10*/ "AIzaSyBqCiJx3-w672wlnzzJjB1TyFmhBiJBJH0",
                 };
 
-                //            foreach (var AvailableMsaName in AvailableMSAsNames)
-                //            {
-                //                CalculatedMsa CalculatedMsa = new CalculatedMsa();
-                //                CalculatedMsa.Name = AvailableMsaName;
-                //                CalculatedMsa.AddressesDistances = new List<AddressesDistance>();
-                //                string MatrixApiMode = "driving";
-                //                string MatrixApiLanguage = "en-EN";
+                int ApiIndex = 0;
+                foreach (var AvailableMsaName in AvailableMSAsNames)
+                {
+                    CalculatedMsa CalculatedMsa = new CalculatedMsa();
+                    CalculatedMsa.Name = AvailableMsaName;
+                    CalculatedMsa.AddressesDistances = new List<AddressesDistance>();
+                    string MatrixApiMode = "driving";
+                    string MatrixApiLanguage = "en-EN";
 
-                //                var SubMsaAddresses = MsaAddresses.Where(msa => msa.MSA.Equals(AvailableMsaName)).ToList<MsaAddress>();
-                //                for (int i = 0; i < SubMsaAddresses.Count(); i++)
-                //                {
-                //                    string OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=";
-                //                    int counter = 0;
-                //                    int j = i + 1;
+                    var SubMsaAddresses = MsaAddresses.Where(msa => msa.MSA.Equals(AvailableMsaName)).ToList<MsaAddress>();
+                    
+                    for (int i = 0; i < SubMsaAddresses.Count(); i++)
+                    {
+                        string OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=";
+                        int counter = 0;
+                        int j = i + 1;
 
-                //                    // if we reach last row as origin address
-                //                    if (i < SubMsaAddresses.Count() && j == SubMsaAddresses.Count()) break;
+                        // if we reach last row as origin address
+                        if (i < SubMsaAddresses.Count() && j == SubMsaAddresses.Count()) break;
 
-                //                    for ( ; j < SubMsaAddresses.Count(); j++)
-                //                    {
-                //                        if (counter++ == 0)
-                //                        {
-                //                            OriginDestinationsStr += HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
-                //                        }
-                //                        else
-                //                        {
-                //                            OriginDestinationsStr += "|" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
-                //                        }
-                //                    }
+                        for (; j < SubMsaAddresses.Count(); j++)
+                        {
+                            if (counter++ == 0)
+                            {
+                                OriginDestinationsStr += HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                            }
+                            else
+                            {
+                                OriginDestinationsStr += "|" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                            }
+                        }
 
-                //                    int RandomNumber = new Random().Next(0, APIs.Count - 1);
-                //                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                //                    string serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[RandomNumber]);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        string serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[ApiIndex++%APIs.Count]);
 
-                //                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceUrl);
-                //                    request.Method = "GET";
-                //                    request.Accept = "application/json; charset=UTF-8";
-                //                    request.Headers.Add("Accept-Language", " en-US");
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceUrl);
+                        request.Method = "GET";
+                        request.Accept = "application/json; charset=UTF-8";
+                        request.Headers.Add("Accept-Language", " en-US");
 
-                //                    try
-                //                    {
-                //                        var httpResponse = (HttpWebResponse)request.GetResponse();
-                //                        DistanceMatrixResponse DistanceMatrixResponse = null;
-                //                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                //                        {
-                //                            var responseText = streamReader.ReadToEnd();
-                //                            DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
-                //                            if (DistanceMatrixResponse.Status == "OK")
-                //                            {
-                //                                if (DistanceMatrixResponse.Error_Message != null)
-                //                                {
-                //                                    Response.IsSucceed = false;
-                //                                    Response.Message = DistanceMatrixResponse.Error_Message;
-                //                                    return Response;
-                //                                }
+                        try
+                        {
+                            var httpResponse = (HttpWebResponse)request.GetResponse();
+                            DistanceMatrixResponse DistanceMatrixResponse = null;
+                            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                            {
+                                var responseText = streamReader.ReadToEnd();
+                                DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
+                                if (DistanceMatrixResponse.Status == "OK")
+                                {
+                                    if (DistanceMatrixResponse.Error_Message != null)
+                                    {
+                                        Response.IsSucceed = false;
+                                        Response.Message = DistanceMatrixResponse.Error_Message;
+                                        return Response;
+                                    }
 
-                //                                var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
-                //                                var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
-                //                                int ii = 0;
-                //                                foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
-                //                                {
-                //                                    AddressesDistance AddressesDistance = new AddressesDistance();
-                //                                    AddressesDistance.OriginAddress = OriginAddress;
-                //                                    AddressesDistance.DestinationAddress = DestinationAddress;
+                                    var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
+                                    var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
+                                    int ii = 0;
+                                    foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
+                                    {
+                                        AddressesDistance AddressesDistance = new AddressesDistance();
+                                        AddressesDistance.OriginAddress = OriginAddress;
+                                        AddressesDistance.DestinationAddress = DestinationAddress;
 
-                //                                    if (Elements[ii].Status.Equals("OK"))
-                //                                    {
-                //                                        AddressesDistance.Distance = Elements[ii].Distance.Text;
-                //                                    }
-                //                                    else
-                //                                    {
-                //                                        AddressesDistance.Distance = "No results found";
-                //                                    }
+                                        if (Elements[ii].Status.Equals("OK"))
+                                        {
+                                            AddressesDistance.Distance = Elements[ii].Distance.Text;
+                                        }
+                                        else
+                                        {
+                                            AddressesDistance.Distance = "No results found";
+                                        }
 
-                //                                    CalculatedMsa.AddressesDistances.Add(AddressesDistance);
-                //                                    ii++;
-                //                                }
-                //                            }
-                //                            else
-                //                            {
-                //                                AddressesDistance AddressesDistance = new AddressesDistance();
-                //                                //AddressesDistance.OriginAddress = OriginAddress;
-                //                                //AddressesDistance.DestinationAddress = DestinationAddress;
-                //                                AddressesDistance.Distance = "Invalid Request";
-                //                                CalculatedMsa.AddressesDistances.Add(AddressesDistance);
-                //                            }
-                //                        }
-                //                    }
-                //                    catch (WebException WebExc)
-                //                    {
-                //                        if (WebExc.Status == WebExceptionStatus.ProtocolError && WebExc.Response != null)
-                //                        {
-                //                            j = i + 1;
-                //                            for (; j < SubMsaAddresses.Count(); j++)
-                //                            {
-                //                                OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
-                //                                serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[RandomNumber]);
+                                        CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                        ii++;
+                                    }
+                                }
+                                else
+                                {
+                                    AddressesDistance AddressesDistance = new AddressesDistance();
+                                    //AddressesDistance.OriginAddress = OriginAddress;
+                                    //AddressesDistance.DestinationAddress = DestinationAddress;
+                                    AddressesDistance.Distance = "Invalid Request";
+                                    CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                }
+                            }
+                        }
+                        catch (WebException WebExc)
+                        {
+                            if (WebExc.Status == WebExceptionStatus.ProtocolError && WebExc.Response != null)
+                            {
+                                j = i + 1;
+                                for (; j < SubMsaAddresses.Count(); j++)
+                                {
+                                    OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                                    serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[ApiIndex++ % APIs.Count]);
 
-                //                                request = (HttpWebRequest)WebRequest.Create(serviceUrl);
-                //                                request.Method = "GET";
-                //                                request.Accept = "application/json; charset=UTF-8";
-                //                                request.Headers.Add("Accept-Language", " en-US");
+                                    request = (HttpWebRequest)WebRequest.Create(serviceUrl);
+                                    request.Method = "GET";
+                                    request.Accept = "application/json; charset=UTF-8";
+                                    request.Headers.Add("Accept-Language", " en-US");
 
-                //                                var httpResponse = (HttpWebResponse)request.GetResponse();
-                //                                DistanceMatrixResponse DistanceMatrixResponse = null;
-                //                                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                //                                {
-                //                                    var responseText = streamReader.ReadToEnd();
-                //                                    DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
-                //                                    if (DistanceMatrixResponse.Status == "OK")
-                //                                    {
-                //                                        if (DistanceMatrixResponse.Error_Message != null)
-                //                                        {
-                //                                            Response.IsSucceed = false;
-                //                                            Response.Message = DistanceMatrixResponse.Error_Message;
-                //                                            return Response;
-                //                                        }
+                                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                                    DistanceMatrixResponse DistanceMatrixResponse = null;
+                                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                    {
+                                        var responseText = streamReader.ReadToEnd();
+                                        DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
+                                        if (DistanceMatrixResponse.Status == "OK")
+                                        {
+                                            if (DistanceMatrixResponse.Error_Message != null)
+                                            {
+                                                Response.IsSucceed = false;
+                                                Response.Message = DistanceMatrixResponse.Error_Message;
+                                                return Response;
+                                            }
 
-                //                                        var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
-                //                                        var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
-                //                                        int ii = 0;
-                //                                        foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
-                //                                        {
-                //                                            AddressesDistance AddressesDistance = new AddressesDistance();
-                //                                            AddressesDistance.OriginAddress = OriginAddress;
-                //                                            AddressesDistance.DestinationAddress = DestinationAddress;
+                                            var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
+                                            var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
+                                            int ii = 0;
+                                            foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
+                                            {
+                                                AddressesDistance AddressesDistance = new AddressesDistance();
+                                                AddressesDistance.OriginAddress = OriginAddress;
+                                                AddressesDistance.DestinationAddress = DestinationAddress;
 
-                //                                            if (Elements[ii].Status.Equals("OK"))
-                //                                            {
-                //                                                AddressesDistance.Distance = Elements[ii].Distance.Text;
-                //                                            }
-                //                                            else
-                //                                            {
-                //                                                AddressesDistance.Distance = "No results found";
-                //                                            }
+                                                if (Elements[ii].Status.Equals("OK"))
+                                                {
+                                                    AddressesDistance.Distance = Elements[ii].Distance.Text;
+                                                }
+                                                else
+                                                {
+                                                    AddressesDistance.Distance = "No results found";
+                                                }
 
-                //                                            CalculatedMsa.AddressesDistances.Add(AddressesDistance);
-                //                                            ii++;
-                //                                        }
-                //                                    }
-                //                                    else
-                //                                    {
-                //                                        AddressesDistance AddressesDistance = new AddressesDistance();
-                //                                        //AddressesDistance.OriginAddress = OriginAddress;
-                //                                        //AddressesDistance.DestinationAddress = DestinationAddress;
-                //                                        AddressesDistance.Distance = "Invalid Request";
-                //                                        CalculatedMsa.AddressesDistances.Add(AddressesDistance);
-                //                                    }
-                //                                }
-                //                            }
-                //                        }
-                //                    }
-                //                    catch (Exception Exc)
-                //                    { }
-                //                }
+                                                CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                                ii++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            AddressesDistance AddressesDistance = new AddressesDistance();
+                                            //AddressesDistance.OriginAddress = OriginAddress;
+                                            //AddressesDistance.DestinationAddress = DestinationAddress;
+                                            AddressesDistance.Distance = "Invalid Request";
+                                            CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //catch (Exception Exc)
+                        { }
+                    }
 
-                //                CalculatedMsas.Add(CalculatedMsa);
-                //            }
+                    CalculatedMsas.Add(CalculatedMsa);
+                }
 
-                //        Response.IsSucceed = true;
-                //        Response.Message = "Addresses calculated.";
-                //        Response.CalculatedMsas = CalculatedMsas;
+                Response.IsSucceed = true;
+                Response.Message = "Addresses calculated.";
+                Response.CalculatedMsas = CalculatedMsas;
 
-                //        Microsoft.Office.Interop.Excel.Application myExcelFile = new Microsoft.Office.Interop.Excel.Application();
-                //        Microsoft.Office.Interop.Excel.Workbook myWorkBook = myExcelFile.Workbooks.Add(XlSheetType.xlWorksheet);
-                //        Microsoft.Office.Interop.Excel.Worksheet myWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)myExcelFile.ActiveSheet;
+                // create excel file to save results in
+                Guid g = Guid.NewGuid();
+                string GuidString = Convert.ToBase64String(g.ToByteArray());
+                GuidString = GuidString.Replace("=", string.Empty);
+                GuidString = GuidString.Replace("+", string.Empty);
+                GuidString = GuidString.Replace("\\", string.Empty);
+                GuidString = GuidString.Replace("/", string.Empty);
 
-                //        //excel sheet is a 1-based array
-                //        myWorkSheet.Cells[1, 1] = "MSA";
-                //        myWorkSheet.Cells[1, 2] = "Origin Address";
-                //        myWorkSheet.Cells[1, 3] = "Destination Address";
-                //        myWorkSheet.Cells[1, 4] = "Distance";
+                string FilePath = Path.Combine(Server.MapPath("~/XlsFiles/CalculatedAddresses-" + GuidString + ".xlsx"));
+                CreateSpreadsheetWorkbook(FilePath);
 
-                //        // don't open excel file in windows during building
-                //        myExcelFile.Visible = false;
+                using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(FilePath, true))
+                {
+                    // put headings in first row
+                    InsertText(spreadSheet, "MSA", Convert.ToChar(65 + 0).ToString(), 1);
+                    InsertText(spreadSheet, "Origin Address", Convert.ToChar(65 + 1).ToString(), 1);
+                    InsertText(spreadSheet, "Destination Address", Convert.ToChar(65 + 2).ToString(), 1);
+                    InsertText(spreadSheet, "Distance", Convert.ToChar(65 + 3).ToString(), 1);
 
-                //        myWorkSheet.EnableAutoFilter = true;
-                //        myWorkSheet.Cells.AutoFilter(1);
-
-                //        //Set the header-row bold
-                //        myWorkSheet.Range["A1", "A1"].EntireRow.Font.Bold = true;
-
-                //        //Adjust all columns
-                //        myWorkSheet.Columns.AutoFit();
-
-                //        // since, first row has titles that are set above, start from row-2 and fill each row of excel file.
-                //        int r = 2;
-                //        foreach (var CalculatedMsa in CalculatedMsas)
-                //        {
-                //            int c = 1;
-                //            foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
-                //            {
-                //                myWorkSheet.Cells[r, c] = CalculatedMsa.Name;
-                //                myWorkSheet.Cells[r, c + 1] = AddressesDistance.OriginAddress;
-                //                myWorkSheet.Cells[r, c + 2] = AddressesDistance.DestinationAddress;
-                //                myWorkSheet.Cells[r, c + 3] = AddressesDistance.Distance;
-                //                r++;
-                //            }
-                //        }
-
+                    uint row = 2;
+                    foreach (var CalculatedMsa in CalculatedMsas)
+                    {
+                        foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                        {
+                            InsertText(spreadSheet, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
+                            InsertText(spreadSheet, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
+                            InsertText(spreadSheet, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
+                            InsertText(spreadSheet, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
+                            row++;
+                        }
+                    }
+                }
+                
+                int b = 0;
                 //        // set the font style of first row as Bold which has titles of each column
                 //        myWorkSheet.Rows[1].Font.Bold = true;
                 //        myWorkSheet.Rows[1].Font.Size = 12;
@@ -827,7 +796,7 @@ namespace DistanceCalculator.Controllers
 
                 return Response;
             }
-            catch (Exception exc)
+            //catch (Exception exc)
             {
                 var Response = new Response();
                 Response.IsSucceed = false;
