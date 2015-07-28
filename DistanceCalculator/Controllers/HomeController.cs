@@ -403,7 +403,7 @@ namespace DistanceCalculator.Controllers
             //response.FileDownloadName = "~/XlsFiles/CalculatedAddresses.xlsx";
             //return response;
 
-            string filename = "ddddd.xlsx";
+            string filename = "CalculatedAddresses.xlsx";
             string filepath = AppDomain.CurrentDomain.BaseDirectory + "/XlsFiles/" + filename;
             byte[] filedata = System.IO.File.ReadAllBytes(filepath);
             string contentType = MimeMapping.GetMimeMapping(filepath);
@@ -761,7 +761,7 @@ namespace DistanceCalculator.Controllers
                 GuidString = GuidString.Replace("\\", string.Empty);
                 GuidString = GuidString.Replace("/", string.Empty);
 
-                string FilePath = Path.Combine(Server.MapPath("~/XlsFiles/CalculatedAddresses-" + GuidString + ".xlsx"));
+                string FilePath = Path.Combine(Server.MapPath("~/XlsFiles/CalculatedAddresses.xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
 
                 using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(FilePath, true))
