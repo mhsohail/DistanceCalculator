@@ -49,3 +49,4 @@ C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\Dis
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\DistanceCalculator.csproj.GenerateResource.Cache
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\DistanceCalculator.dll
 C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\DistanceCalculator.pdb
+C:\Users\pc\Documents\GitHub\DistanceCalculator\DistanceCalculator\obj\Debug\DistanceCalculator.csprojResolveAssemblyReference.cache
