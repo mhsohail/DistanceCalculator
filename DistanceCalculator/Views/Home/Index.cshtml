@@ -125,9 +125,10 @@
                         $("#CalculationProgress").html("<img src='images/ajax-loader.gif' style=\"width:20px;\" />");
                         $("#DownloadExcelFile").html("Waiting...");
                     },
-                    success: function () {
+                    success: function (responseText) {
                         $("#CalculationProgress").html("Addresses Calculated.");
-                        $("#DownloadExcelFile").html("<a href='/Home/Download' target='_blank'>Download</a>");
+                        $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + responseText.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
+                        console.log(responseText);
                     },
                     uploadProgress: function (event, position, total, percentComplete) {
                         //$("#DownloadExcelFile").html(percentComplete + " - " + total);

@@ -10,6 +10,7 @@ namespace DistanceCalculator.DTOs
     {
         public bool IsSucceed { get; set; }
         public string Message { get; set; }
+        public string CalculatedAddressesFileName { get; set; }
         public ICollection<CalculatedMsa> CalculatedMsas { get; set; }
     }
 }

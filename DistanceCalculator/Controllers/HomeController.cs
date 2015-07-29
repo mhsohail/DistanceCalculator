@@ -1,4 +1,5 @@
-﻿using DistanceCalculator.DTOs;
+﻿using DistanceCalculator.Classes;
+using DistanceCalculator.DTOs;
 using DistanceCalculator.Models;
 using DistanceCalculator.ViewModels;
 using DocumentFormat.OpenXml;
@@ -396,21 +397,20 @@ namespace DistanceCalculator.Controllers
             return new JavaScriptSerializer().Serialize(Response);
         }
 
-        public ActionResult Download()
+        public ActionResult Download(string FileName)
         {
             //byte[] fileBytes = System.IO.File.ReadAllBytes("~/App_Data/CalculatedAddresses.xlsx");
             //var response = new FileContentResult(fileBytes, "application/octet-stream");
             //response.FileDownloadName = "~/App_Data/CalculatedAddresses.xlsx";
             //return response;
 
-            string filename = "CalculatedAddresses.xlsx";
-            string filepath = AppDomain.CurrentDomain.BaseDirectory + "/App_Data/" + filename;
+            string filepath = AppDomain.CurrentDomain.BaseDirectory + "/App_Data/" + FileName;
             byte[] filedata = System.IO.File.ReadAllBytes(filepath);
             string contentType = MimeMapping.GetMimeMapping(filepath);
 
             System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
             {
-                FileName = filename,
+                FileName = FileName,
                 Inline = true,
             };
 
@@ -761,9 +761,9 @@ namespace DistanceCalculator.Controllers
                 GuidString = GuidString.Replace("\\", string.Empty);
                 GuidString = GuidString.Replace("/", string.Empty);
 
+                /*
                 string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
-                
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(fs, true))
@@ -789,7 +789,30 @@ namespace DistanceCalculator.Controllers
                         spreadSheetDocument.Close();
                     }
                 }
-                
+                */
+
+                try
+                {
+                    //CalculatedMsas.ToList<CalculatedMsa>().ExportCSV("myCSV");
+                    Guid guid = Guid.NewGuid();
+                    GuidString = Convert.ToBase64String(guid.ToByteArray());
+                    GuidString = GuidString.Replace("=", string.Empty);
+                    GuidString = GuidString.Replace("+", string.Empty);
+                    GuidString = GuidString.Replace("\\", string.Empty);
+                    GuidString = GuidString.Replace("/", string.Empty);
+                    var list = CalculatedMsas.ToList<CalculatedMsa>()[0].AddressesDistances.ToList<AddressesDistance>();
+                    Extensions.CreateCSVFromGenericList<AddressesDistance>(list, Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".csv")));
+                    Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".csv";
+                }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    //Thrown then calling Response.End in CSV Helper
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+
                 //        // set the font style of first row as Bold which has titles of each column
                 //        myWorkSheet.Rows[1].Font.Bold = true;
                 //        myWorkSheet.Rows[1].Font.Size = 12;
