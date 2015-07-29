@@ -764,7 +764,7 @@ namespace DistanceCalculator.Controllers
                 string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
                 
-                using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(fs, true))
                     {
