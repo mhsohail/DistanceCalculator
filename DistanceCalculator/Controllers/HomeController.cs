@@ -763,10 +763,10 @@ namespace DistanceCalculator.Controllers
 
                 string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
-                /*
+                
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(FilePath, true))
+                    using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(fs, true))
                     {
                         // put headings in first row
                         InsertText(spreadSheet, "MSA", Convert.ToChar(65 + 0).ToString(), 1);
@@ -788,7 +788,7 @@ namespace DistanceCalculator.Controllers
                         }
                     }
                 }
-                */
+                
                 //        // set the font style of first row as Bold which has titles of each column
                 //        myWorkSheet.Rows[1].Font.Bold = true;
                 //        myWorkSheet.Rows[1].Font.Size = 12;
