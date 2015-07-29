@@ -260,7 +260,7 @@ namespace DistanceCalculator.Controllers
         {
             var Response = new Response();
 
-            //try
+            try
             {
                 if (Request.Files.Count > 0)
                 {
@@ -388,10 +388,10 @@ namespace DistanceCalculator.Controllers
                     }
                 }
             }
-            //catch(Exception exc)
+            catch(Exception exc)
             {
                 Response.IsSucceed = false;
-                //Response.Message = exc.Message;
+                Response.Message = exc.Message;
             }
 
             return new JavaScriptSerializer().Serialize(Response);
@@ -550,7 +550,7 @@ namespace DistanceCalculator.Controllers
 
         private Response CalculateDistances()
         {
-            //try
+            try
             {
                 var Response = new Response();
                 ICollection<CalculatedMsa> CalculatedMsas = new List<CalculatedMsa>();
@@ -680,70 +680,81 @@ namespace DistanceCalculator.Controllers
                         }
                         catch (WebException WebExc)
                         {
-                            if (WebExc.Status == WebExceptionStatus.ProtocolError && WebExc.Response != null)
+                            try
                             {
-                                j = i + 1;
-                                for (; j < SubMsaAddresses.Count(); j++)
+                                if (WebExc.Status == WebExceptionStatus.ProtocolError && WebExc.Response != null)
                                 {
-                                    OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
-                                    serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[ApiIndex++ % APIs.Count]);
-
-                                    request = (HttpWebRequest)WebRequest.Create(serviceUrl);
-                                    request.Method = "GET";
-                                    request.Accept = "application/json; charset=UTF-8";
-                                    request.Headers.Add("Accept-Language", " en-US");
-
-                                    var httpResponse = (HttpWebResponse)request.GetResponse();
-                                    DistanceMatrixResponse DistanceMatrixResponse = null;
-                                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                    j = i + 1;
+                                    for (; j < SubMsaAddresses.Count(); j++)
                                     {
-                                        var responseText = streamReader.ReadToEnd();
-                                        DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
-                                        if (DistanceMatrixResponse.Status == "OK")
-                                        {
-                                            if (DistanceMatrixResponse.Error_Message != null)
-                                            {
-                                                Response.IsSucceed = false;
-                                                Response.Message = DistanceMatrixResponse.Error_Message;
-                                                return Response;
-                                            }
+                                        OriginDestinationsStr = "origins=" + HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[i].State) + "&destinations=" + HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                                        serviceUrl = string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?" + OriginDestinationsStr + "&mode=" + MatrixApiMode + "&language=" + MatrixApiLanguage + "&key=" + APIs[ApiIndex++ % APIs.Count]);
 
-                                            var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
-                                            var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
-                                            int ii = 0;
-                                            foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
+                                        request = (HttpWebRequest)WebRequest.Create(serviceUrl);
+                                        request.Method = "GET";
+                                        request.Accept = "application/json; charset=UTF-8";
+                                        request.Headers.Add("Accept-Language", " en-US");
+
+                                        var httpResponse = (HttpWebResponse)request.GetResponse();
+                                        DistanceMatrixResponse DistanceMatrixResponse = null;
+                                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                        {
+                                            var responseText = streamReader.ReadToEnd();
+                                            DistanceMatrixResponse = serializer.Deserialize<DistanceMatrixResponse>(responseText);
+                                            if (DistanceMatrixResponse.Status == "OK")
+                                            {
+                                                if (DistanceMatrixResponse.Error_Message != null)
+                                                {
+                                                    Response.IsSucceed = false;
+                                                    Response.Message = DistanceMatrixResponse.Error_Message;
+                                                    return Response;
+                                                }
+
+                                                var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
+                                                var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
+                                                int ii = 0;
+                                                foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
+                                                {
+                                                    AddressesDistance AddressesDistance = new AddressesDistance();
+                                                    AddressesDistance.OriginAddress = OriginAddress;
+                                                    AddressesDistance.DestinationAddress = DestinationAddress;
+
+                                                    if (Elements[ii].Status.Equals("OK"))
+                                                    {
+                                                        AddressesDistance.Distance = Elements[ii].Distance.Text;
+                                                    }
+                                                    else
+                                                    {
+                                                        AddressesDistance.Distance = "No results found";
+                                                    }
+
+                                                    CalculatedMsa.AddressesDistances.Add(AddressesDistance);
+                                                    ii++;
+                                                }
+                                            }
+                                            else
                                             {
                                                 AddressesDistance AddressesDistance = new AddressesDistance();
-                                                AddressesDistance.OriginAddress = OriginAddress;
-                                                AddressesDistance.DestinationAddress = DestinationAddress;
-
-                                                if (Elements[ii].Status.Equals("OK"))
-                                                {
-                                                    AddressesDistance.Distance = Elements[ii].Distance.Text;
-                                                }
-                                                else
-                                                {
-                                                    AddressesDistance.Distance = "No results found";
-                                                }
-
+                                                //AddressesDistance.OriginAddress = OriginAddress;
+                                                //AddressesDistance.DestinationAddress = DestinationAddress;
+                                                AddressesDistance.Distance = "Invalid Request";
                                                 CalculatedMsa.AddressesDistances.Add(AddressesDistance);
-                                                ii++;
                                             }
-                                        }
-                                        else
-                                        {
-                                            AddressesDistance AddressesDistance = new AddressesDistance();
-                                            //AddressesDistance.OriginAddress = OriginAddress;
-                                            //AddressesDistance.DestinationAddress = DestinationAddress;
-                                            AddressesDistance.Distance = "Invalid Request";
-                                            CalculatedMsa.AddressesDistances.Add(AddressesDistance);
                                         }
                                     }
                                 }
                             }
+                            catch(Exception exc)
+                            {
+                                Response.IsSucceed = false;
+                                Response.Message = exc.Message;
+                            }
                         }
-                        //catch (Exception Exc)
-                        { }
+                        catch (Exception Exc)
+                        {
+                            Response.IsSucceed = false;
+                            Response.Message = Exc.Message; 
+                        }
                     }
 
                     CalculatedMsas.Add(CalculatedMsa);
@@ -804,13 +815,16 @@ namespace DistanceCalculator.Controllers
                     Extensions.CreateCSVFromGenericList<AddressesDistance>(list, Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".csv")));
                     Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".csv";
                 }
-                catch (System.Threading.ThreadAbortException)
+                catch (System.Threading.ThreadAbortException exc)
                 {
                     //Thrown then calling Response.End in CSV Helper
+                    Response.IsSucceed = false;
+                    Response.Message = exc.Message;
                 }
-                catch (Exception ex)
+                catch (Exception exc)
                 {
-                    
+                    Response.IsSucceed = false;
+                    Response.Message = exc.Message;
                 }
 
                 //        // set the font style of first row as Bold which has titles of each column
@@ -822,11 +836,11 @@ namespace DistanceCalculator.Controllers
 
                 return Response;
             }
-            //catch (Exception exc)
+            catch (Exception exc)
             {
                 var Response = new Response();
                 Response.IsSucceed = false;
-                //    Response.Message = exc.Message;
+                Response.Message = exc.Message;
                 return Response;
             }
         }
