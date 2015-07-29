@@ -115,25 +115,9 @@
 
         <script>
             $(function () {
-                //$("#FilePathForm").submit(function (e) {
-                //    //if (!$form.valid()) return;
-                //    var options = {
-                //        beforeSend: function () {
-                //            $("#progress").show();
-                //        },
-                //        success: function () {
-                //            $("#progress").hide();
-                //        },
-                //        complete: function (response) {
-                //            $("#message").html("<font color='green'>" + response.responseText + "</font>");
-                //        },
-                //        error: function () {
-                //            $("#message").html("<font color='red'> ERROR: unable to upload files</font>");
-                //        }
-                //    };
-                //    $("#FilePathForm").ajaxForm(options);
-                //    return false;
-                //});
+                $("#FilePathForm").submit(function (e) {
+                    if (!$(this).valid()) return false;
+                });
 
                 //if (!$form.valid()) return;
                 var options = {
