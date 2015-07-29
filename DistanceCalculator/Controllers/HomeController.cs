@@ -220,7 +220,7 @@ namespace DistanceCalculator.Controllers
             return View();
         }
 
-        //[AjaxRequestOnly]
+        [AjaxRequestOnly]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult GetDistances(HomeIndexViewModel model, HttpPostedFileBase File)
