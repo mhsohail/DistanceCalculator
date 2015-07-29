@@ -772,7 +772,7 @@ namespace DistanceCalculator.Controllers
                 GuidString = GuidString.Replace("\\", string.Empty);
                 GuidString = GuidString.Replace("/", string.Empty);
 
-                /*
+                // save results to excel file
                 string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
@@ -798,10 +798,12 @@ namespace DistanceCalculator.Controllers
                             }
                         }
                         spreadSheetDocument.Close();
+                        Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".csv";
                     }
                 }
-                */
-
+                
+                /*
+                // save results to excel file
                 try
                 {
                     //CalculatedMsas.ToList<CalculatedMsa>().ExportCSV("myCSV");
@@ -826,6 +828,7 @@ namespace DistanceCalculator.Controllers
                     Response.IsSucceed = false;
                     Response.Message = exc.Message;
                 }
+                */
 
                 //        // set the font style of first row as Bold which has titles of each column
                 //        myWorkSheet.Rows[1].Font.Bold = true;
