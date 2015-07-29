@@ -233,7 +233,7 @@ namespace DistanceCalculator.Controllers
                     if (file != null && file.ContentLength > 0)
                     {
                         var fileName = Path.GetFileName(file.FileName);
-                        var path = Path.Combine(Server.MapPath("~/XlsFiles/"), fileName);
+                        var path = Path.Combine(Server.MapPath("~/App_Data/"), fileName);
                         file.SaveAs(path);
                     }
                 }
@@ -289,7 +289,7 @@ namespace DistanceCalculator.Controllers
                         FileNameWithoutExt += GuidString;
                         fileName = FileNameWithoutExt + FileExtension;
 
-                        var path = Path.Combine(Server.MapPath("~/XlsFiles/"), fileName);
+                        var path = Path.Combine(Server.MapPath("~/App_Data/"), fileName);
                         file.SaveAs(path);
 
                         GetDataAndPutInModel(path);
@@ -398,13 +398,13 @@ namespace DistanceCalculator.Controllers
 
         public ActionResult Download()
         {
-            //byte[] fileBytes = System.IO.File.ReadAllBytes("~/XlsFiles/CalculatedAddresses.xlsx");
+            //byte[] fileBytes = System.IO.File.ReadAllBytes("~/App_Data/CalculatedAddresses.xlsx");
             //var response = new FileContentResult(fileBytes, "application/octet-stream");
-            //response.FileDownloadName = "~/XlsFiles/CalculatedAddresses.xlsx";
+            //response.FileDownloadName = "~/App_Data/CalculatedAddresses.xlsx";
             //return response;
 
             string filename = "CalculatedAddresses.xlsx";
-            string filepath = AppDomain.CurrentDomain.BaseDirectory + "/XlsFiles/" + filename;
+            string filepath = AppDomain.CurrentDomain.BaseDirectory + "/App_Data/" + filename;
             byte[] filedata = System.IO.File.ReadAllBytes(filepath);
             string contentType = MimeMapping.GetMimeMapping(filepath);
 
@@ -761,7 +761,7 @@ namespace DistanceCalculator.Controllers
                 GuidString = GuidString.Replace("\\", string.Empty);
                 GuidString = GuidString.Replace("/", string.Empty);
 
-                string FilePath = Path.Combine(Server.MapPath("~/XlsFiles/CalculatedAddresses.xlsx"));
+                string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses.xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
 
                 using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(FilePath, true))
@@ -792,7 +792,7 @@ namespace DistanceCalculator.Controllers
                 //        myWorkSheet.Rows[1].Font.Size = 12;
 
                 //        // after filling, save the file to the specified location
-                //        myWorkBook.SaveCopyAs(Path.Combine(Server.MapPath("~/XlsFiles/CalculatedAddresses.xlsx")));
+                //        myWorkBook.SaveCopyAs(Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses.xlsx")));
 
                 return Response;
             }
