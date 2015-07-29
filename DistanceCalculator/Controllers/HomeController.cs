@@ -761,7 +761,7 @@ namespace DistanceCalculator.Controllers
                 GuidString = GuidString.Replace("\\", string.Empty);
                 GuidString = GuidString.Replace("/", string.Empty);
 
-                string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses.xlsx"));
+                string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
 
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
