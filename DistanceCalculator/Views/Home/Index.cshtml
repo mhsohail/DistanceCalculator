@@ -126,13 +126,14 @@
                         $("#DownloadExcelFile").html("Waiting...");
                     },
                     success: function () {
+                        $("#CalculationProgress").html("Addresses Calculated.");
                         $("#DownloadExcelFile").html("<a href='/Home/Download' target='_blank'>Download</a>");
                     },
                     uploadProgress: function (event, position, total, percentComplete) {
                         //$("#DownloadExcelFile").html(percentComplete + " - " + total);
                     },
                     complete: function (response) {
-                        //$("#CalculationProgress").html("Completed");
+                        
                     },
                     error: function () {
                         $("#CalculationProgress").html("Failed");
