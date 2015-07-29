@@ -764,28 +764,30 @@ namespace DistanceCalculator.Controllers
                 string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses.xlsx"));
                 CreateSpreadsheetWorkbook(FilePath);
 
-                using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(FilePath, true))
+                using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    // put headings in first row
-                    InsertText(spreadSheet, "MSA", Convert.ToChar(65 + 0).ToString(), 1);
-                    InsertText(spreadSheet, "Origin Address", Convert.ToChar(65 + 1).ToString(), 1);
-                    InsertText(spreadSheet, "Destination Address", Convert.ToChar(65 + 2).ToString(), 1);
-                    InsertText(spreadSheet, "Distance", Convert.ToChar(65 + 3).ToString(), 1);
-
-                    uint row = 2;
-                    foreach (var CalculatedMsa in CalculatedMsas)
+                    using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(FilePath, true))
                     {
-                        foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                        // put headings in first row
+                        InsertText(spreadSheet, "MSA", Convert.ToChar(65 + 0).ToString(), 1);
+                        InsertText(spreadSheet, "Origin Address", Convert.ToChar(65 + 1).ToString(), 1);
+                        InsertText(spreadSheet, "Destination Address", Convert.ToChar(65 + 2).ToString(), 1);
+                        InsertText(spreadSheet, "Distance", Convert.ToChar(65 + 3).ToString(), 1);
+
+                        uint row = 2;
+                        foreach (var CalculatedMsa in CalculatedMsas)
                         {
-                            InsertText(spreadSheet, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
-                            InsertText(spreadSheet, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
-                            InsertText(spreadSheet, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
-                            InsertText(spreadSheet, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
-                            row++;
+                            foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                            {
+                                InsertText(spreadSheet, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
+                                InsertText(spreadSheet, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
+                                InsertText(spreadSheet, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
+                                InsertText(spreadSheet, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
+                                row++;
+                            }
                         }
                     }
                 }
-                
                 int b = 0;
                 //        // set the font style of first row as Bold which has titles of each column
                 //        myWorkSheet.Rows[1].Font.Bold = true;
