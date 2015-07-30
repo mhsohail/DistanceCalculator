@@ -133,11 +133,10 @@
                         $.ajax({
                             type: "post",
                             contentType: "application/json",
-                            //dataType: "application/json",
                             url: "/Home/CalculateAddresses",
                             data: responseText,
-                            success: function () {
-                                alert("fdsafasfadfds");
+                            success: function (responseText1) {
+                                alert(responseText1);
                             }
                         });
                     },
