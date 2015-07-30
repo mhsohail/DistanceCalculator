@@ -154,11 +154,15 @@
                                     for (var i = 0; i < Response.CalculatedMsas.length; i++) {
                                         CalculatedDistances.push(Response.CalculatedMsas[i]);
                                     }
-                                    if (Page++ != NumberOfPages) CalculateDistances();
+                                    if (Page++ != NumberOfPages) {
+                                        CalculateDistances();
+                                    } else {
+                                        console.log(CalculatedDistances);
+                                    }
                                 }
                             });
                         }
-                        console.log(CalculatedDistances);
+                        
                         return;
                         Page++;
                         CalculateDistances();
