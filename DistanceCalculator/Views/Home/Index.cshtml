@@ -134,11 +134,13 @@
 
                         var Page = 1;
                         var PerPage = 10;
+                        CalculateDistances();
                         function CalculateDistances() {
                             var PartialMsaAddresses = [];
                             for (var i = (Page - 1) * PerPage; i < Page * PerPage; i++)
                             {
                                 alert(i + " - " + (Page * PerPage));
+                                if(Page == 11) break;
                             }
                         }
 
