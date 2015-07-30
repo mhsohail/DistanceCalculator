@@ -129,6 +129,7 @@
                         $("#CalculationProgress").html("Addresses Calculated.");
                         //var response = JSON.parse(responseText);
                         //$("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
+                        var CalculatedDistances = [];
                         var MsaAddresses = JSON.parse(responseText);
                         console.log(MsaAddresses);
 
@@ -148,7 +149,11 @@
                                 url: "/Home/CalculateAddresses",
                                 data: JSON.stringify(PartialMsaAddresses),
                                 success: function (responseText1) {
-                                    console.log(responseText1);
+                                    var PartialCalculatedDistances = JSON.parse(responseText1);
+                                    for (var i = 0; i < PartialCalculatedDistances.length; i++) {
+                                        CalculatedDistances.push(PartialCalculatedDistances[i]);
+                                    }
+                                    console.log(CalculatedDistances);
                                 }
                             });
                         }
