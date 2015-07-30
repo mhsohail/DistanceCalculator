@@ -263,7 +263,47 @@ namespace DistanceCalculator.Controllers
         [AjaxRequestOnly]
         public string PutResultsInExcel(List<CalculatedMsa> CalculatedMsas)
         {
-            return string.Empty;
+            // create excel file to save results in
+            DistanceCalculator.DTOs.Response Response = new DistanceCalculator.DTOs.Response();
+
+            Guid g = Guid.NewGuid();
+            string GuidString = Convert.ToBase64String(g.ToByteArray());
+            GuidString = GuidString.Replace("=", string.Empty);
+            GuidString = GuidString.Replace("+", string.Empty);
+            GuidString = GuidString.Replace("\\", string.Empty);
+            GuidString = GuidString.Replace("/", string.Empty);
+
+            // save results to excel file
+            string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
+            CreateSpreadsheetWorkbook(FilePath);
+            using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            {
+                using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(fs, true))
+                {
+                    // put headings in first row
+                    InsertText(spreadSheetDocument, "MSA", Convert.ToChar(65 + 0).ToString(), 1);
+                    InsertText(spreadSheetDocument, "Origin Address", Convert.ToChar(65 + 1).ToString(), 1);
+                    InsertText(spreadSheetDocument, "Destination Address", Convert.ToChar(65 + 2).ToString(), 1);
+                    InsertText(spreadSheetDocument, "Distance", Convert.ToChar(65 + 3).ToString(), 1);
+
+                    uint row = 2;
+                    foreach (var CalculatedMsa in CalculatedMsas)
+                    {
+                        foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                        {
+                            InsertText(spreadSheetDocument, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
+                            InsertText(spreadSheetDocument, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
+                            InsertText(spreadSheetDocument, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
+                            InsertText(spreadSheetDocument, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
+                            row++;
+                        }
+                    }
+                    spreadSheetDocument.Close();
+                    Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".csv";
+                }
+            }
+            
+            return new JavaScriptSerializer().Serialize(Response);
         }
 
         [AjaxRequestOnly]

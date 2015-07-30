@@ -163,8 +163,9 @@
                                             contentType: "application/json",
                                             url: "/Home/PutResultsInExcel",
                                             data: JSON.stringify(CalculatedDistances),
-                                            success: function (responseText1) {
-                                                
+                                            success: function (responseText2) {
+                                                var response = JSON.parse(responseText2);
+                                                $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
                                             }
                                         });
                                     }
