@@ -149,9 +149,9 @@
                                 url: "/Home/CalculateAddresses",
                                 data: JSON.stringify(PartialMsaAddresses),
                                 success: function (responseText1) {
-                                    var PartialCalculatedDistances = JSON.parse(responseText1);
-                                    for (var i = 0; i < PartialCalculatedDistances.length; i++) {
-                                        CalculatedDistances.push(PartialCalculatedDistances.CalculatedMsas[i]);
+                                    var Response = JSON.parse(responseText1);
+                                    for (var i = 0; i < Response.CalculatedMsas.length; i++) {
+                                        CalculatedDistances.push(Response.CalculatedMsas[i]);
                                     }
                                     console.log(CalculatedDistances);
                                 }
