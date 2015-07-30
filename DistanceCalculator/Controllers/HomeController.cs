@@ -303,7 +303,7 @@ namespace DistanceCalculator.Controllers
                         }
                     }
                     spreadSheetDocument.Close();
-                    Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".csv";
+                    Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".xlsx";
                 }
             }
             
