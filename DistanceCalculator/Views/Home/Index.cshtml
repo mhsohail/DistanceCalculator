@@ -129,14 +129,16 @@
                         $("#CalculationProgress").html("Addresses Calculated.");
                         //var response = JSON.parse(responseText);
                         //$("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
-
+                        var MsaAddresses = JSON.parse(responseText);
+                        console.log(MsaAddresses);
+                        return;
                         $.ajax({
                             type: "post",
                             contentType: "application/json",
                             url: "/Home/CalculateAddresses",
                             data: responseText,
                             success: function (responseText1) {
-                                console.log(responseText1);
+                                
                             }
                         });
                     },
