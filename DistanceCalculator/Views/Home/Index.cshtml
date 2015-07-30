@@ -141,7 +141,16 @@
                             {
                                 PartialMsaAddresses.push(MsaAddresses[i]);
                             }
-                            console.log(PartialMsaAddresses);
+                            
+                            $.ajax({
+                                type: "post",
+                                contentType: "application/json",
+                                url: "/Home/CalculateAddresses",
+                                data: JSON.stringify(PartialMsaAddresses),
+                                success: function (responseText1) {
+                                    console.log(responseText1);
+                                }
+                            });
                         }
                         return;
                         Page++;
@@ -149,15 +158,7 @@
                         Page++;
                         CalculateDistances();
                         return;
-                        $.ajax({
-                            type: "post",
-                            contentType: "application/json",
-                            url: "/Home/CalculateAddresses",
-                            data: responseText,
-                            success: function (responseText1) {
-                                
-                            }
-                        });
+                        
                     },
                     uploadProgress: function (event, position, total, percentComplete) {
                         //$("#DownloadExcelFile").html(percentComplete + " - " + total);
