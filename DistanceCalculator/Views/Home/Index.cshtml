@@ -140,8 +140,11 @@
                             for (var i = (Page - 1) * PerPage; i < Page * PerPage; i++)
                             {
                                 alert(i + " - " + (Page * PerPage));
+                                PartialMsaAddresses.push(MsaAddresses[i]);
                             }
+                            console.log(PartialMsaAddresses);
                         }
+                        return;
                         Page++;
                         CalculateDistances();
                         Page++;
