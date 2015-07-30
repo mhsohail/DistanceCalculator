@@ -261,6 +261,12 @@ namespace DistanceCalculator.Controllers
         }
 
         [AjaxRequestOnly]
+        public string PutResultsInExcel(List<CalculatedMsa> CalculatedMsas)
+        {
+            return string.Empty;
+        }
+
+        [AjaxRequestOnly]
         [HttpPost]
         public string Test()
         {

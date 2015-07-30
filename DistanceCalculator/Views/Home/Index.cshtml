@@ -158,6 +158,15 @@
                                         CalculateDistances();
                                     } else {
                                         console.log(CalculatedDistances);
+                                        $.ajax({
+                                            type: "post",
+                                            contentType: "application/json",
+                                            url: "/Home/PutResultsInExcel",
+                                            data: JSON.stringify(CalculatedDistances),
+                                            success: function (responseText1) {
+                                                
+                                            }
+                                        });
                                     }
                                 }
                             });
