@@ -151,7 +151,7 @@
                                 success: function (responseText1) {
                                     var PartialCalculatedDistances = JSON.parse(responseText1);
                                     for (var i = 0; i < PartialCalculatedDistances.length; i++) {
-                                        CalculatedDistances.push(PartialCalculatedDistances[i]);
+                                        CalculatedDistances.push(PartialCalculatedDistances.CalculatedMsas[i]);
                                     }
                                     console.log(CalculatedDistances);
                                 }
