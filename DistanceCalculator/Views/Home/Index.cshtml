@@ -151,9 +151,9 @@
                                 data: JSON.stringify(PartialMsaAddresses),
                                 success: function (responseText1) {
                                     var Response = JSON.parse(responseText1);
-                                    for (var i = 0; i < Response.CalculatedMsas.length; i++) {
-                                        CalculatedDistances.push(Response.CalculatedMsas[i]);
-                                    }
+                                    //for (var i = 0; i < Response.CalculatedMsas.length; i++) {
+                                        CalculatedDistances.push(Response.CalculatedMsas.join(","));
+                                    //}
                                     if (Page++ != NumberOfPages) {
                                         CalculateDistances();
                                     } else {
