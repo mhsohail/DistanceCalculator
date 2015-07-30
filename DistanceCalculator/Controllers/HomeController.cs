@@ -254,7 +254,7 @@ namespace DistanceCalculator.Controllers
             return View(model);
         }
 
-        //[AjaxRequestOnly]
+        [AjaxRequestOnly]
         [HttpPost]
         public string Test()
         {
@@ -801,7 +801,7 @@ namespace DistanceCalculator.Controllers
                         Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".csv";
                     }
                 }
-                 
+                
                 /*
                 // save results to excel file
                 try
