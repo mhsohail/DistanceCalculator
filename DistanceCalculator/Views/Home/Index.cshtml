@@ -158,6 +158,7 @@
                                         CalculateDistances();
                                     } else {
                                         console.log(CalculatedDistances);
+                                        console.log(JSON.stringify(CalculatedDistances).length);
                                         $.ajax({
                                             type: "post",
                                             contentType: "application/json",
