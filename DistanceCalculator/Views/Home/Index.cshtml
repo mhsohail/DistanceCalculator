@@ -131,6 +131,17 @@
                         //$("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
                         var MsaAddresses = JSON.parse(responseText);
                         console.log(MsaAddresses);
+
+                        var Page = 1;
+                        var PerPage = 10;
+                        function CalculateDistances() {
+                            var PartialMsaAddresses = [];
+                            for (var i = (Page - 1) * PerPage; i < Page * PerPage; i++)
+                            {
+                                alert(i + " - " + (Page * PerPage));
+                            }
+                        }
+
                         return;
                         $.ajax({
                             type: "post",
