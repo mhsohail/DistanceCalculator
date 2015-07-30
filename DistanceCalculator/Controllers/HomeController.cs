@@ -289,13 +289,17 @@ namespace DistanceCalculator.Controllers
                     uint row = 2;
                     foreach (var CalculatedMsa in CalculatedMsas)
                     {
-                        foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                        // if there is only one address for an MSA, this value will be null
+                        if (CalculatedMsa.AddressesDistances != null)
                         {
-                            InsertText(spreadSheetDocument, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
-                            InsertText(spreadSheetDocument, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
-                            InsertText(spreadSheetDocument, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
-                            InsertText(spreadSheetDocument, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
-                            row++;
+                            foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                            {
+                                InsertText(spreadSheetDocument, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
+                                InsertText(spreadSheetDocument, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
+                                InsertText(spreadSheetDocument, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
+                                InsertText(spreadSheetDocument, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
+                                row++;
+                            }
                         }
                     }
                     spreadSheetDocument.Close();
