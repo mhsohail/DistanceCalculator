@@ -255,6 +255,12 @@ namespace DistanceCalculator.Controllers
         }
 
         [AjaxRequestOnly]
+        public string CalculateAddresses(List<MsaAddress> MsaAddresses)
+        {
+            return new JavaScriptSerializer().Serialize(CalculateDistances(MsaAddresses));
+        }
+
+        [AjaxRequestOnly]
         [HttpPost]
         public string Test()
         {
@@ -294,8 +300,8 @@ namespace DistanceCalculator.Controllers
                         file.SaveAs(path);
 
                         GetDataAndPutInModel(path);
-
-                        return new JavaScriptSerializer().Serialize(CalculateDistances());
+                        return new JavaScriptSerializer().Serialize(MsaAddresses);
+                        //return new JavaScriptSerializer().Serialize(CalculateDistances());
                         /////////////////////////////////////////////////////////////////////////////
                         /*
                         //Declare variables to hold refernces to Excel objects.
@@ -548,7 +554,7 @@ namespace DistanceCalculator.Controllers
             return value;
         }
 
-        private Response CalculateDistances()
+        private Response CalculateDistances(List<MsaAddress> MsaAddresses)
         {
             try
             {

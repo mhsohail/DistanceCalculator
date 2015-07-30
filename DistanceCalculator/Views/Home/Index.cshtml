@@ -127,9 +127,18 @@
                     },
                     success: function (responseText) {
                         $("#CalculationProgress").html("Addresses Calculated.");
-                        var response = JSON.parse(responseText);
-                        $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
-                        console.log(responseText);
+                        //var response = JSON.parse(responseText);
+                        //$("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
+                        $.ajax({
+                            type: "post",
+                            contentType: "application/json",
+                            dataType: "application/json",
+                            url: "/Home/CalculateAddresses",
+                            data: responseText,
+                            success: function (response) {
+                                alert(response);
+                            }
+                        });
                     },
                     uploadProgress: function (event, position, total, percentComplete) {
                         //$("#DownloadExcelFile").html(percentComplete + " - " + total);
