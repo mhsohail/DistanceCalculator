@@ -14,6 +14,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using VdoValley.Attributes;
+using System;
+using System.IO;
 
 namespace DistanceCalculator.Controllers
 {
@@ -258,6 +260,37 @@ namespace DistanceCalculator.Controllers
         public string CalculateAddresses(List<MsaAddress> MsaAddresses)
         {
             return new JavaScriptSerializer().Serialize(CalculateDistances(MsaAddresses));
+        }
+
+        public string ReadWrite()
+        {
+            // save results to excel file
+            string FilePath = Path.Combine(Server.MapPath("~/App_Data/ReadWrite.xlsx"));
+            if (!System.IO.File.Exists(FilePath))
+            {
+                CreateSpreadsheetWorkbook(FilePath);
+            }
+            
+            uint i = 1;
+            do
+            {
+                using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {
+                    using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(fs, true))
+                    {
+                        InsertText(spreadSheetDocument, "MSA", Convert.ToChar(65 + 0).ToString(), i);
+                        InsertText(spreadSheetDocument, "Origin Address", Convert.ToChar(65 + 1).ToString(), i);
+                        InsertText(spreadSheetDocument, "Destination Address", Convert.ToChar(65 + 2).ToString(), i);
+                        InsertText(spreadSheetDocument, "Distance", Convert.ToChar(65 + 3).ToString(), i);
+                        
+                        spreadSheetDocument.Close();
+                    }
+                }
+                i++;
+            }
+            while(true);
+
+            return string.Empty;
         }
 
         [AjaxRequestOnly]
