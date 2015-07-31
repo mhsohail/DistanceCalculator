@@ -288,7 +288,7 @@ namespace DistanceCalculator.Controllers
                 }
                 i++;
             }
-            while(true);
+            while(i < 10);
 
             return string.Empty;
         }
