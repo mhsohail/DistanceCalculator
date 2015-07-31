@@ -266,9 +266,11 @@ namespace DistanceCalculator.Controllers
         {
             // save results to excel file
             string FilePath = Path.Combine(Server.MapPath("~/App_Data/ReadWrite.xlsx"));
+            bool fileExists = true;
             if (!System.IO.File.Exists(FilePath))
             {
                 CreateSpreadsheetWorkbook(FilePath);
+                fileExists = false;
             }
             
             uint i = 11;
@@ -290,7 +292,7 @@ namespace DistanceCalculator.Controllers
             }
             while(i < 15);
 
-            return FilePath;
+            return FilePath + " - " + fileExists;
         }
 
         [AjaxRequestOnly]
