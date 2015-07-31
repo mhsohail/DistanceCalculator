@@ -296,7 +296,7 @@ namespace DistanceCalculator.Controllers
         }
 
         [AjaxRequestOnly]
-        public string PutResultsInExcel(List<CalculatedMsa> CalculatedMsas)
+        public string PutResultsInExcel(List<AddressesDistance> AddressesDistances, uint RowNum)
         {
             // create excel file to save results in
             DistanceCalculator.DTOs.Response Response = new DistanceCalculator.DTOs.Response();
@@ -309,8 +309,12 @@ namespace DistanceCalculator.Controllers
             GuidString = GuidString.Replace("/", string.Empty);
 
             // save results to excel file
-            string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses-" + GuidString + ".xlsx"));
-            CreateSpreadsheetWorkbook(FilePath);
+            string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses.xlsx"));
+            if (!System.IO.File.Exists(FilePath))
+            {
+                CreateSpreadsheetWorkbook(FilePath);
+            }
+
             using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
                 using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(fs, true))
@@ -321,24 +325,25 @@ namespace DistanceCalculator.Controllers
                     InsertText(spreadSheetDocument, "Destination Address", Convert.ToChar(65 + 2).ToString(), 1);
                     InsertText(spreadSheetDocument, "Distance", Convert.ToChar(65 + 3).ToString(), 1);
 
-                    uint row = 2;
-                    foreach (var CalculatedMsa in CalculatedMsas)
-                    {
+                    uint row = RowNum;
+                    //foreach (var CalculatedMsa in CalculatedMsas)
+                    //{
                         // if there is only one address for an MSA, this value will be null
-                        if (CalculatedMsa.AddressesDistances != null)
+                        if (AddressesDistances != null)
                         {
-                            foreach (var AddressesDistance in CalculatedMsa.AddressesDistances)
+                            foreach (var AddressesDistance in AddressesDistances)
                             {
-                                InsertText(spreadSheetDocument, CalculatedMsa.Name, Convert.ToChar(65 + 0).ToString(), row);
+                                InsertText(spreadSheetDocument, AddressesDistance.MsaName, Convert.ToChar(65 + 0).ToString(), row);
                                 InsertText(spreadSheetDocument, AddressesDistance.OriginAddress, Convert.ToChar(65 + 1).ToString(), row);
                                 InsertText(spreadSheetDocument, AddressesDistance.DestinationAddress, Convert.ToChar(65 + 2).ToString(), row);
                                 InsertText(spreadSheetDocument, AddressesDistance.Distance, Convert.ToChar(65 + 3).ToString(), row);
                                 row++;
                             }
                         }
-                    }
+                    //}
                     spreadSheetDocument.Close();
-                    Response.CalculatedAddressesFileName = "CalculatedAddresses-" + GuidString + ".xlsx";
+                    Response.RowNum = row;
+                    Response.CalculatedAddressesFileName = "CalculatedAddresses.xlsx";
                 }
             }
             

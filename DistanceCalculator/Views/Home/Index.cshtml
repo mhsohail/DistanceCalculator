@@ -129,10 +129,9 @@
                         $("#CalculationProgress").html("Addresses Calculated.");
                         //var response = JSON.parse(responseText);
                         //$("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
-                        var CalculatedDistances = [];
+                        var CalculatedMsas = [];
                         var MsaAddresses = JSON.parse(responseText);
-                        console.log(MsaAddresses);
-
+                        
                         var Page = 1;
                         var PerPage = 20;
                         var NumberOfPages = Math.ceil(MsaAddresses.length / PerPage);
@@ -152,23 +151,76 @@
                                 success: function (responseText1) {
                                     var Response = JSON.parse(responseText1);
                                     for (var i = 0; i < Response.CalculatedMsas.length; i++) {
-                                        CalculatedDistances.push(Response.CalculatedMsas[i]);
+                                        CalculatedMsas.push(Response.CalculatedMsas[i]);
                                     }
                                     if (Page++ != NumberOfPages) {
                                         CalculateDistances();
                                     } else {
-                                        console.log(CalculatedDistances);
-                                        console.log(JSON.stringify(CalculatedDistances).length);
-                                        $.ajax({
-                                            type: "post",
-                                            contentType: "application/json",
-                                            url: "/Home/PutResultsInExcel",
-                                            data: JSON.stringify(CalculatedDistances),
-                                            success: function (responseText2) {
-                                                var response = JSON.parse(responseText2);
-                                                $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
+                                        //===========================================
+                                        console.log(CalculatedMsas.length);
+                                        var Distances = [];
+                                        for (k = 0; k < CalculatedMsas.length; k++)
+                                        {
+                                            for (m = 0; m < CalculatedMsas[k].AddressesDistances.length; m++)
+                                            {
+                                                var Distance = {};
+                                                Distance.MsaName = CalculatedMsas[k].Name;
+                                                Distance.DestinationAddress = CalculatedMsas[k].AddressesDistances[m].DestinationAddress;
+                                                Distance.OriginAddress = CalculatedMsas[k].AddressesDistances[m].OriginAddress;
+                                                Distance.Distance = CalculatedMsas[k].AddressesDistances[m].Distance;
+
+                                                Distances.push(Distance);
                                             }
-                                        });
+                                        }
+                                        
+                                        console.log(Distances);
+                                        var PutIntoExcelPage = 1;
+                                        var PutIntoExcelPerPage = 20;
+                                        var PutIntoExcelNumberOfPages = Math.ceil(Distances.length / PutIntoExcelPerPage);
+                                        PutIntoExcel();
+                                        function PutIntoExcel(rn) {
+                                            var RowNum = ((typeof rn === "undefined") ? 2 : rn);
+                                            var PartialDistances = [];
+                                            
+                                            for (var i = (PutIntoExcelPage - 1) * PutIntoExcelPerPage; (i < PutIntoExcelPage * PutIntoExcelPerPage) && (i < Distances.length) ; i++) {
+                                                PartialDistances.push(Distances[i]);
+                                            }
+                                                
+                                            $.ajax({
+                                                type: "post",
+                                                contentType: "application/json",
+                                                url: "/Home/PutResultsInExcel?RowNum=" + RowNum,
+                                                data: JSON.stringify(PartialDistances),
+                                                success: function (responseText3) {
+                                                    var response = JSON.parse(responseText3);
+                                                    if (PutIntoExcelPage++ != PutIntoExcelNumberOfPages) {
+                                                        PutIntoExcel(response.RowNum);
+                                                    } else {
+                                                        $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
+                                                    }    
+                                                }
+                                            });
+
+                                            /*
+                                            $.ajax({
+                                                type: "post",
+                                                contentType: "application/json",
+                                                url: "/Home/CalculateAddresses",
+                                                data: JSON.stringify(PartialMsaAddresses),
+                                                success: function (responseText1) {
+                                                    var Response = JSON.parse(responseText1);
+                                                    for (var i = 0; i < Response.CalculatedMsas.length; i++) {
+                                                        CalculatedMsas.push(Response.CalculatedMsas[i]);
+                                                    }
+                                                    if (PutIntoExcelPage++ != PutIntoExcelNumberOfPages) {
+                                                        CalculateDistances();
+                                                    } else {
+                                                        
+                                                    }
+                                                }
+                                            });*/
+                                        }
+                                        //===========================================
                                     }
                                 }
                             });
