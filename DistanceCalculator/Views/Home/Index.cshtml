@@ -174,7 +174,7 @@
                                         
                                         console.log(Distances);
                                         var PutIntoExcelPage = 1;
-                                        var PutIntoExcelPerPage = 50;
+                                        var PutIntoExcelPerPage = 20;
                                         var PutIntoExcelNumberOfPages = Math.ceil(Distances.length / PutIntoExcelPerPage);
                                         PutIntoExcel();
                                         function PutIntoExcel(rn) {
@@ -197,7 +197,7 @@
                                                     } else {
                                                         $("#CalculationProgress").html("Addresses Calculated.");
                                                         $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
-                                                    }    
+                                                    }
                                                 }
                                             });
 
