@@ -271,7 +271,7 @@ namespace DistanceCalculator.Controllers
                 CreateSpreadsheetWorkbook(FilePath);
             }
             
-            uint i = 1;
+            uint i = 11;
             do
             {
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
@@ -288,7 +288,7 @@ namespace DistanceCalculator.Controllers
                 }
                 i++;
             }
-            while(i < 10);
+            while(i < 15);
 
             return FilePath;
         }
