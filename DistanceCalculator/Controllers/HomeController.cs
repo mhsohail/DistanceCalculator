@@ -282,8 +282,8 @@ namespace DistanceCalculator.Controllers
                         InsertText(spreadSheetDocument, "Origin Address", Convert.ToChar(65 + 1).ToString(), i);
                         InsertText(spreadSheetDocument, "Destination Address", Convert.ToChar(65 + 2).ToString(), i);
                         InsertText(spreadSheetDocument, "Distance", Convert.ToChar(65 + 3).ToString(), i);
-                         
-                        spreadSheetDocument.Close();
+                        
+                        spreadSheetDocument.Close(); 
                     }
                 }
                 i++;
