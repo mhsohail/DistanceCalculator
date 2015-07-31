@@ -126,7 +126,6 @@
                         $("#DownloadExcelFile").html("Waiting...");
                     },
                     success: function (responseText) {
-                        $("#CalculationProgress").html("Addresses Calculated.");
                         //var response = JSON.parse(responseText);
                         //$("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
                         var CalculatedMsas = [];
@@ -196,6 +195,7 @@
                                                     if (PutIntoExcelPage++ != PutIntoExcelNumberOfPages) {
                                                         PutIntoExcel(response.RowNum);
                                                     } else {
+                                                        $("#CalculationProgress").html("Addresses Calculated.");
                                                         $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
                                                     }    
                                                 }
