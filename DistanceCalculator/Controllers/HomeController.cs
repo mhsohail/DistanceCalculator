@@ -273,7 +273,7 @@ namespace DistanceCalculator.Controllers
                 fileExists = false;
             }
             
-            uint i = 11;
+            uint i = 17;
             do
             {
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
@@ -290,7 +290,7 @@ namespace DistanceCalculator.Controllers
                 }
                 i++;
             }
-            while(i < 15);
+            while(i < 21);
 
             return FilePath + " - " + fileExists;
         }
