@@ -290,7 +290,7 @@ namespace DistanceCalculator.Controllers
             }
             while(i < 10);
 
-            return string.Empty;
+            return FilePath;
         }
 
         [AjaxRequestOnly]
