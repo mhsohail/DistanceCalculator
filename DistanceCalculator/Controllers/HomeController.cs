@@ -310,7 +310,7 @@ namespace DistanceCalculator.Controllers
 
             // save results to excel file
             string FilePath = Path.Combine(Server.MapPath("~/App_Data/CalculatedAddresses.xlsx"));
-            if (!System.IO.File.Exists(FilePath))
+            if (!System.IO.File.Exists(FilePath) || RowNum == 2)
             {
                 CreateSpreadsheetWorkbook(FilePath);
             }
