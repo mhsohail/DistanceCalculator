@@ -198,6 +198,10 @@
                                                         $("#CalculationProgress").html("Addresses Calculated.");
                                                         $("#DownloadExcelFile").html("<a href='/Home/Download?FileName=" + response.CalculatedAddressesFileName + "' target='_blank'>Download</a>");
                                                     }
+                                                },
+                                                error: function (xhr, status, error) {
+                                                    $("#CalculationProgress").html("Failed");
+                                                    $("#DownloadExcelFile").html("File could not be created due to failed progress");
                                                 }
                                             });
 
@@ -222,6 +226,10 @@
                                         }
                                         //===========================================
                                     }
+                                },
+                                error: function (xhr, status, error) {
+                                    $("#CalculationProgress").html("Failed");
+                                    $("#DownloadExcelFile").html("File could not be created due to failed progress");
                                 }
                             });
                         }
