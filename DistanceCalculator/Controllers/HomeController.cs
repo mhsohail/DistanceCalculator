@@ -745,11 +745,14 @@ namespace DistanceCalculator.Controllers
                                     var Elements = DistanceMatrixResponse.Rows.First().Elements.ToList();
                                     var OriginAddress = DistanceMatrixResponse.Origin_Addresses.ToList().First();
                                     int ii = 0;
+                                    j = i + 1;
                                     foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
                                     {
                                         AddressesDistance AddressesDistance = new AddressesDistance();
-                                        AddressesDistance.OriginAddress = OriginAddress;
-                                        AddressesDistance.DestinationAddress = DestinationAddress;
+                                        //AddressesDistance.OriginAddress = OriginAddress;
+                                        //AddressesDistance.DestinationAddress = DestinationAddress;
+                                        AddressesDistance.OriginAddress = SubMsaAddresses[i].Address;
+                                        AddressesDistance.DestinationAddress = SubMsaAddresses[j++].Address;
 
                                         if (Elements[ii].Status.Equals("OK"))
                                         {
@@ -812,9 +815,9 @@ namespace DistanceCalculator.Controllers
                                                 foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
                                                 {
                                                     AddressesDistance AddressesDistance = new AddressesDistance();
-                                                    AddressesDistance.OriginAddress = OriginAddress;
-                                                    AddressesDistance.DestinationAddress = DestinationAddress;
-
+                                                    AddressesDistance.OriginAddress = HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "," + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "," + HttpUtility.UrlEncode(SubMsaAddresses[i].State);
+                                                    AddressesDistance.DestinationAddress = HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                                                    
                                                     if (Elements[ii].Status.Equals("OK"))
                                                     {
                                                         AddressesDistance.Distance = Elements[ii].Distance.Text;
