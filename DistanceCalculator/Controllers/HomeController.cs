@@ -751,8 +751,8 @@ namespace DistanceCalculator.Controllers
                                         AddressesDistance AddressesDistance = new AddressesDistance();
                                         //AddressesDistance.OriginAddress = OriginAddress;
                                         //AddressesDistance.DestinationAddress = DestinationAddress;
-                                        AddressesDistance.OriginAddress = SubMsaAddresses[i].Address;
-                                        AddressesDistance.DestinationAddress = SubMsaAddresses[j++].Address;
+                                        AddressesDistance.OriginAddress = SubMsaAddresses[i].Address + ", " + SubMsaAddresses[i].City + ", " + SubMsaAddresses[i].State;
+                                        AddressesDistance.DestinationAddress = SubMsaAddresses[j].Address + ", " + SubMsaAddresses[j].City + ", " + SubMsaAddresses[j++].State;
 
                                         if (Elements[ii].Status.Equals("OK"))
                                         {
@@ -815,8 +815,8 @@ namespace DistanceCalculator.Controllers
                                                 foreach (var DestinationAddress in DistanceMatrixResponse.Destination_Addresses)
                                                 {
                                                     AddressesDistance AddressesDistance = new AddressesDistance();
-                                                    AddressesDistance.OriginAddress = HttpUtility.UrlEncode(SubMsaAddresses[i].Address) + "," + HttpUtility.UrlEncode(SubMsaAddresses[i].City) + "," + HttpUtility.UrlEncode(SubMsaAddresses[i].State);
-                                                    AddressesDistance.DestinationAddress = HttpUtility.UrlEncode(SubMsaAddresses[j].Address) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].City) + "+" + HttpUtility.UrlEncode(SubMsaAddresses[j].State);
+                                                    AddressesDistance.OriginAddress = SubMsaAddresses[i].Address + ", " + SubMsaAddresses[i].City + ", " + SubMsaAddresses[i].State;
+                                                    AddressesDistance.DestinationAddress = SubMsaAddresses[j].Address + ", " + SubMsaAddresses[j].City + ", " + SubMsaAddresses[j].State;
                                                     
                                                     if (Elements[ii].Status.Equals("OK"))
                                                     {
